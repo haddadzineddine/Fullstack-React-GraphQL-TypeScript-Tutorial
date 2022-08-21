@@ -1,0 +1,29 @@
+{
+   "name": "full-stack",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "scripts": {
+      "start:dev": "nodemon",
+      "typeorm": "typeorm-ts-node-commonjs"
+   },
+   "keywords": [],
+   "author": "",
+   "license": "ISC",
+   "devDependencies": {
+      "@types/express": "^4.17.13",
+      "@types/node": "^16.11.10",
+      "nodemon": "^2.0.19",
+      "ts-node": "10.7.0",
+      "typescript": "4.5.2"
+   },
+   "dependencies": {
+      "apollo-server-express": "^3.10.1",
+      "class-validator": "^0.13.2",
+      "express": "^4.18.1",
+      "reflect-metadata": "^0.1.13",
+      "sqlite3": "^5.0.11",
+      "type-graphql": "^1.1.1",
+      "typeorm": "0.3.7"
+   }
+}
