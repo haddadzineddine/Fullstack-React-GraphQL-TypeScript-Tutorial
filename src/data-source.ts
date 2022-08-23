@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
+import { Post } from "./entity/Post";
 import { User } from "./entity/User";
 
 export const AppDataSource = new DataSource({
@@ -7,7 +8,7 @@ export const AppDataSource = new DataSource({
   database: "lireddit.sqlite",
   synchronize: true,
   logging: false,
-  entities: [User],
+  entities: [User, Post],
   migrations: [],
   subscribers: [],
 });

@@ -1,6 +1,9 @@
+import { Request, Response } from "express"
 import { DataSource } from "typeorm"
 
 
 export type MyContext = {
-    appDataSource: DataSource
+    appDataSource: DataSource,
+    req: Request,
+    res: Response
 }
