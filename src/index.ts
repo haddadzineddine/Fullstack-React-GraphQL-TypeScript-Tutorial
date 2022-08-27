@@ -11,6 +11,7 @@ import connectRedis from 'connect-redis';
 import { __prod__ } from './constants';
 import { MyContext } from './types';
 import Redis from 'ioredis';
+import cors from 'cors';
 
 const main = async () => {
     const appDataSource = await AppDataSource.initialize();
@@ -18,6 +19,7 @@ const main = async () => {
     const redisStore = connectRedis(session);
 
     const redisClient = new Redis();
+
 
     const cookieConfig = {
         httpOnly: true,
@@ -34,6 +36,10 @@ const main = async () => {
     };
 
     const app: Express = express();
+    app.use(cors({
+        origin: "http://localhost:3000",
+        credentials: true
+    }));
     app.use(session(sessionConfig))
 
     app.get("/", (req: Request, res: Response) => {
@@ -53,14 +59,15 @@ const main = async () => {
 
     await apolloServer.start();
 
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({ app, cors: false, path: '/fuck' });
 
-    app.listen(3000, () => {
-        console.log("Server is running on port 3000");
-    });
+    app.listen(3001, () => {
+        console.log('server is running at port : 3000');
+        console.log('graphql is running at : ' + apolloServer.graphqlPath);
+
+    })
+
+
 };
 
-main().then(() => {
-    console.log("Server is running");
-});
-
+main();

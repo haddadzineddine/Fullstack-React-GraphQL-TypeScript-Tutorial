@@ -24,9 +24,9 @@ class RegisterUserInput extends CredentialsInput {
 }
 
 @ObjectType()
-class FiledError {
+class FieldError {
     @Field()
-    filed: string
+    field: string
 
     @Field()
     message: string
@@ -34,8 +34,8 @@ class FiledError {
 
 @ObjectType()
 class UserResponse {
-    @Field(() => [FiledError], { nullable: true })
-    errors?: FiledError[]
+    @Field(() => [FieldError], { nullable: true })
+    errors?: FieldError[]
 
     @Field(() => User, { nullable: true })
     user?: User
@@ -82,13 +82,31 @@ export class UserResolver {
     }
 
 
-    @Mutation(() => User)
+    @Mutation(() => UserResponse)
     async register(
         @Arg("options") options: RegisterUserInput,
         @Ctx() { appDataSource, req }: MyContext
-    ): Promise<User> {
+    ): Promise<UserResponse> {
         const userRepository = await appDataSource.getRepository(User);
         const hashedPassword = await argon2.hash(options.password);
+
+        if (options.username.length < 3) {
+            return {
+                errors: [{
+                    field: "username",
+                    message: "username must be at least >=3 characters"
+                }]
+            }
+        }
+
+        if (options.password.length < 8) {
+            return {
+                errors: [{
+                    field: "password",
+                    message: "password must be at least >=8 characters"
+                }]
+            }
+        }
 
         const user = await userRepository.create({
             username: options.username,
@@ -102,7 +120,7 @@ export class UserResolver {
         // session id and send it on every subsequent request !
         req.session.userId = user.id;
 
-        return user;
+        return { user };
     }
 
     @Mutation(() => UserResponse)
@@ -119,7 +137,7 @@ export class UserResolver {
         if (!user) {
             return {
                 errors: [{
-                    filed: "username",
+                    field: "username",
                     message: "could'nt find a user with this username"
                 }]
             }
@@ -130,7 +148,7 @@ export class UserResolver {
         if (!validPassword) {
             return {
                 errors: [{
-                    filed: "password",
+                    field: "password",
                     message: "password is incorrect !"
                 }]
             }
